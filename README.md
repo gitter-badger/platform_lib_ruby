@@ -1,8 +1,10 @@
-# PlatformLibRuby
+# Platform Lib Ruby 
 
-TODO: Write a gem description
+[![Build Status](https://travis-ci.org/ShawONEX/platform_lib_ruby.png)](https://travis-ci.org/ShawONEX/platform_lib_ruby)
 
-## Installation
+A simple gem to help us work with ThePlatform's Data Service API.
+
+## Installation (Doesn't work yet)
 
 Add this line to your application's Gemfile:
 
