@@ -13,18 +13,21 @@ module PlatformLib
 
     def query(params, &block)
       with_authentication_token do |token|
-        params[:token] = token if token != ""
+        params[:token] = token if not token.strip.empty?
 
         items = execute_query(params)
-        return items if block.nil?
 
-        items.each { |item| block.call(item) }
+        if block.nil?
+          items
+        else
+          items.each { |item| block.call(item) }
+        end
       end
     end
 
     def query_uri(params)
-      url = "http://data.media.theplatform.com/media/data/Media?"
-      url << "#{URI.encode_www_form(params)}" if params
+      url = "http://data.media.theplatform.com/media/data/Media"
+      url << "?#{URI.encode_www_form(params)}" if params
       
       URI.parse(url)
     end
@@ -33,8 +36,9 @@ module PlatformLib
 
     def execute_query(params)
       uri = query_uri(params)
-      puts "URL: #{uri}"
-      get_json(uri)["entries"]
+      response = get_json(uri)
+
+      response["entries"]
     end
   end
 end
