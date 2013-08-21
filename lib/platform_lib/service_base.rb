@@ -8,11 +8,9 @@ module PlatformLib
 
     def with_authentication_token(&block)
       begin
-        # create token
         sign_in
         block.call(@auth_token)
       ensure
-        # destroy token
         sign_out if @auth_token
       end
     end
@@ -23,7 +21,7 @@ module PlatformLib
 
     def get_json(uri, authenticate = false)
       http = Net::HTTP.new(uri.host, uri.port)
-      if uri.to_s.start_with?("https")
+      if uri.scheme == "https"
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end

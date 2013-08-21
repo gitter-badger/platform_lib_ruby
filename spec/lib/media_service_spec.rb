@@ -11,11 +11,22 @@ describe "Media Service" do
   it { should respond_to(:query) }
   it { should respond_to(:query_uri) }
 
+  # protected attribtues
+  it { should_not respond_to(:username) }
+  it { should_not respond_to(:password)}
+
   describe "#query" do
-    let(:params) { { fields: ["id", "guid", "title"] } }
+    let(:params) do 
+      { 
+        fields: "id,guid,title"
+      } 
+    end
 
     before do
-      subject.stub(:execute_query).and_return(["item1", "item2"])
+      subject.stub(:execute_query).and_return([
+        double("mock1"),
+        double("mock2")
+      ])
     end
 
     context "when called without a block" do
