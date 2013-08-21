@@ -11,9 +11,12 @@ describe "Media Service" do
   it { should respond_to(:query) }
   it { should respond_to(:query_uri) }
 
-  # protected attribtues
-  it { should_not respond_to(:username) }
-  it { should_not respond_to(:password)}
+  # seems like protected attribtues not available 
+  # before 2.0.0
+  if RUBY_VERSION != "1.9.3"
+    it { should_not respond_to(:username) }
+    it { should_not respond_to(:password)}
+  end
 
   describe "#query" do
     let(:params) do 
