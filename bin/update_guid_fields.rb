@@ -20,10 +20,10 @@ items = []
 
 service.query(params) do |item|
   # these are the old items
-  next if item["guid"] =~ /\A\d+\z/
+  next if item.guid =~ /\A\d+\z/
 
-  if item["guid"] != item["id"].split('/').last
-    item["guid"] = item["id"].split('/').last.to_s
+  if item.guid != item.id.split('/').last
+    item.guid = item.id.split('/').last.to_s
     items << item
   end
 end
@@ -31,10 +31,6 @@ end
 if items.empty?
   puts "All items are up to date."
 else
-  payload = {
-    entries: items
-  }
-
   puts "We need to update the following items..."
-  puts JSON.pretty_generate(payload)
+  puts JSON.pretty_generate(items)
 end

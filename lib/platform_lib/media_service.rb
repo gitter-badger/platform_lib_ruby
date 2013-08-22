@@ -73,9 +73,7 @@ module PlatformLib
 
     def execute_query(params)
       uri = query_uri(params)
-      response = get_json(uri)
-
-      response["entries"]
+      get_entries(uri)
     end
   end
 end
