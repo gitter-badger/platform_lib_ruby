@@ -11,55 +11,52 @@
 #
 # To run use tp_lib, like this:
 #
-#    $ tp_lib username password
+#    $ tp_lib sync_with_guid username password
 #
-$: << File.expand_path("../../../lib", __FILE__)
-require "platform_lib"
 require 'json'
 
-user = ARGV[0]
-pass = ARGV[1]
+def sync_guid_with_id(user, pass)
 
-service = PlatformLib::DataService.new(user, pass)
+  service = PlatformLib::DataService.new(user, pass)
 
-params = {
-  fields: "id,guid",
-  schema: "1.6.0",
-  form: "cjson",
-  byCustomValue: "{mDialogIngestSuccess}{true}",
-  range: "1-2",
-  sort: "added|desc",
-  account: "Shaw - GlobalTV"
-}
+  params = {
+    fields: "id,guid",
+    schema: "1.6.0",
+    form: "cjson",
+    byCustomValue: "{mDialogIngestSuccess}{true}",
+    range: "1-100",
+    sort: "added|desc",
+    account: "Shaw - GlobalTV"
+  }
 
-update_params = {
-  schema: "1.2",
-  account: "Shaw - GlobalTV"
-}
+  update_params = {
+    schema: "1.2",
+    account: "Shaw - GlobalTV"
+  }
 
-items = []
+  items = []
 
-begin
-  service.media_service.get_media_items(params) do |item|
-    # these are the old items
-    #next if item.guid =~ /\A\d+\z/
+  begin
+    service.media_service.get_media_items(params) do |item|
+      # these are the old items
+      next if item.guid =~ /\A\d+\z/
 
-    # if item.guid != item.id.split('/').last
-    #   item.guid = item.id.split('/').last.to_s
-    #   items << item
-    # end
-    items << item
+      if item.guid != item.id.split('/').last
+        item.guid = item.id.split('/').last.to_s
+        items << item
+      end
+    end
+
+    # update the items
+    items.each { |item| item.guid = item.id.split('/').last }
+
+    if items.empty?
+      puts "All items are up to date."
+    else
+      service.media_service.update_media_items(items, update_params)
+      puts "Updated #{items.size} items."
+    end
+  ensure
+    service.sign_out
   end
-
-  # update the items
-  items.each { |item| item.guid = item.id.split('/').last }
-
-  if items.empty?
-    puts "All items are up to date."
-  else
-    service.media_service.update_media_items(items, update_params)
-    puts "Updated #{items.size} items."
-  end
-ensure
-  service.sign_out
 end

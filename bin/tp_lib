@@ -1,5 +1,17 @@
-#!/bin/bash
-action=$1
-shift
+#!/usr/bin/env ruby
+# encoding: UTF-8
 
-ruby `dirname $0`/../lib/scripts/$action.rb $@
+# resolve bin path, ignoring symlinks
+require "pathname"
+bin_file = Pathname.new(__FILE__).realpath
+
+# add self to libpath
+$:.unshift File.expand_path("../../lib", bin_file)
+
+require "platform_lib"
+
+if ARGV.size > 1
+  __send__(ARGV[0], *ARGV[1..-1])
+else
+  __send__(ARGV[0])
+end
