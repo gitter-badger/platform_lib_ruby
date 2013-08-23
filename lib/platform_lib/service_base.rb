@@ -61,8 +61,6 @@ module PlatformLib
       uri = URI.parse("#{end_point}?#{URI.encode_www_form(params)}")
       puts uri.to_s
       body = "{ \"entries\": #{JSON.generate(entries)} }"
-
-      puts body
       
       WebHelper::put(uri, body)
     end

@@ -61,7 +61,6 @@ module PlatformLib
 
     def sign_in
       uri = URI.parse(AUTH_URL_FORMAT.sub(/ACTION/, 'signIn'))
-      puts "authenticating with #{@username} and #{@password}"
       response = WebHelper::get(uri, user: @username, pass: @password)
 
       response_object = Hashie::Mash.new(JSON.parse(response))

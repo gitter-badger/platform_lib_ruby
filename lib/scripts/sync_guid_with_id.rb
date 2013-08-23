@@ -57,7 +57,6 @@ begin
   if items.empty?
     puts "All items are up to date."
   else
-    p items
     service.media_service.update_media_items(items, update_params)
     puts "Updated #{items.size} items."
   end

@@ -30,8 +30,7 @@ module PlatformLib
       request.content_type = "application/json"
       request.body = body
       
-      res = http.request(request)
-      puts res.body
+      http.request(request)
     end
 
     private

@@ -6,17 +6,23 @@ A simple gem to help us work with ThePlatform's Data Service API.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+You'll need to clone the repo and cd into the directory. Then run these:
+
+    $ bundle install
+    $ rake install
+
+Add this line to your application's Gemfile (if writing code):
 
     gem 'platform_lib_ruby'
 
-And then execute:
+## Updating
 
-    $ bundle
+Navigate to the working directory, and run the following:
 
-Or install it yourself as:
-
-    $ gem install platform_lib_ruby
+    $ gem uninstall platform_lib
+    $ git pull
+    $ bundle install
+    $ rake install
 
 ## Usage
 
@@ -27,7 +33,7 @@ Currently there is only one script. Here's how we use it:
 
     $ tp_lib sync_guid_with_id <user> <pass>
 
-*Replace <user> and <pass> with your MPX username and password*
+*Replace `<user>` and `<pass>` with your MPX username and password*
 
 ## Contributing
 
