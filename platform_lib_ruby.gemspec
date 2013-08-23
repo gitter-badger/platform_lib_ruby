@@ -7,10 +7,10 @@ Gem::Specification.new do |spec|
   spec.name          = "platform_lib"
   spec.version       = PlatformLib::VERSION
   spec.authors       = ["David Muto"]
-  spec.email         = ["david.muto@gmail.com"]
+  spec.email         = ["david.muto@shawmedia.ca"]
   spec.description   = %q{Simple library for working with ThePlatform Data Services}
   spec.summary       = %q{Work with ThePlatform Data Services}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/ShawONEX/platform_lib_ruby"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

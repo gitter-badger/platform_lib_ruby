@@ -1,6 +1,6 @@
 require 'json'
 require 'hashie'
-require 'net/https'
+require "platform_lib/web_helper"
 
 module PlatformLib
   # Public: Useful methods for working with thePlatform's
@@ -15,79 +15,63 @@ module PlatformLib
   #     end
   module ServiceBase
 
-    # Public: Execute the supplied block passing a newly created 
-    # auth token that can be used for subsequent requests.
+    protected 
+
+    # Protected: Performs a get request and returns the "entries" array
     #
-    # &block - the block to execute once the token has been obtained
+    # end_point - the https? end point to connect to
+    # params - an optional hash of parameter values (query string)
+    # block - an optional block to be called for each returned entry
     #
     # Examples:
     #
-    #     with_authentication_token do |token|
-    #       # do other things...
-    #     end
+    #     arr = get_entries("http://www.somedomain.com/service", { uid: 10 })
     #
-    # Returns nothing
-    def with_authentication_token(&block)
-      begin
-        sign_in
-        block.call(@auth_token)
-      ensure
-        sign_out if @auth_token
+    #     get_entries("http://www.domain.com") do |single_item|
+    #       # do something with the item
+    #     end
+    def get_entries(end_point, params = {}, &block)
+      ensure_auth_param(params)
+
+      uri = URI.parse("#{end_point}?#{URI.encode_www_form(params)}")
+      raw = WebHelper::get(uri, token: @auth_token)
+
+      items = JSON.parse(raw)["entries"].map { |item| Hashie::Mash.new(item) }
+
+      if block.nil?
+        items
+      else
+        items.each { |item| block.call(item) }
       end
     end
 
-    protected
+    # Protected: Performs a put request, updating the entries
+    #
+    # end_point - the https? end point to connect to
+    # params - an optional hash of parameter values (query string)
+    # entries - the array of entries to be added to the request body
+    #
+    # Examples:
+    #
+    #     arr = get_entries("http://www.somedomain.com/service", { uid: 10 })
+    #     put_entries(MY_END_POINT, nil, arr)
+    def put_entries(end_point, params = {}, entries)
+      ensure_auth_param(params)
 
-    attr_reader :username, :password
+      uri = URI.parse("#{end_point}?#{URI.encode_www_form(params)}")
+      puts uri.to_s
+      body = "{ \"entries\": #{JSON.generate(entries)} }"
 
-    def get_item(uri, use_basic_auth = false)
-      perform_request(uri, use_basic_auth) do |response|
-        Hashie::Mash.new(JSON.parse(response.body))
-      end
-    end
-
-    def get_entries(uri, use_basic_auth = false)
-      perform_request(uri, use_basic_auth) do |response|
-        array = JSON.parse(response.body)["entries"]
-        array.map { |entry| Hashie::Mash.new(entry) }
-      end
+      puts body
+      
+      WebHelper::put(uri, body)
     end
 
     private 
 
-    AUTH_URL_FORMAT = "https://identity.auth.theplatform.com"
-    AUTH_URL_FORMAT << "/idm/web/Authentication/ACTION?schema=1.0&form=json"
-
-    def perform_request(uri, use_basic_auth)
-      http = Net::HTTP.new(uri.host, uri.port)
-      if uri.scheme == "https"
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request.basic_auth(@username, @password) if use_basic_auth
-
-      response = http.request(request)
-
-      if block_given?
-        yield(response)
-      else
-        response
-      end
-    end
-
-    def sign_in
-      url = "#{AUTH_URL_FORMAT.sub(/ACTION/, 'signIn')}"
-
-      value = get_item(URI.parse(url), true)
-      @auth_token = value.signInResponse.token
-    end
-
-    def sign_out
-      url = "#{AUTH_URL_FORMAT.sub(/ACTION/, 'signOut')}"
-      url << "&_token=#{@auth_token}"
-      get_item(URI.parse(url))
+    def ensure_auth_param(params)
+      # ensure the token parameter is there
+      params[:token] = @auth_token if not params.has_key?(:token)
     end
 
   end

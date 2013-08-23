@@ -7,73 +7,59 @@ module PlatformLib
   #
   # Examples:
   #
-  #     service = PlatformLib::MediaService.new("user", "pass")
+  #     # the preferred method 
+  #     service = PlatformLib::DataService.new("user", "pass").media_service
+  #
+  #     # direct instantiation
+  #     service = PlatformLib::MediaService.new("auth_token")
   #
   class MediaService
     include ServiceBase
+
+    END_POINT = "http://data.media.theplatform.com/media/data/Media"
     
-    # Public: Creates a new instance of this service
+    # Public: Creates a new instance
     #
-    # username - The username for use with basic auth
-    # password - The password for use with basic auth
-    def initialize(username, password)
-      @username = username
-      @password = password
+    # auth_token - the authentication token to be used
+    def initialize(auth_token)
+      @auth_token = auth_token
     end
 
-    # Public: Queries the Media endpoint
+    # Public: Queries the media end point
     #
-    # params - a hash with all the (querystring) parameters
-    # &block - an optional block to be executed for each media item returned
+    # params - an optional hash of parameters (query string)
+    # block - an optional block to be called for each item returned
     #
     # Examples:
     #
-    #     service = PlatformLib::MediaService.new(SOME_USER, SOME_PASSWORD)
+    #     items = media_service.get_media_items(range: "1-10")
     #
-    #     results = service.query({ fields: "id,guid,title" })
-    #
-    #     service.query({ fields: "id,guid,title" }) do |media_item|
-    #       puts "Title: #{media_item['title']}"
+    #     media_service.get_media_items(byCustomValue: "{test}{val}") do |item|
+    #       puts item.title
     #     end
     #
-    # Returns the list of items (when block not supplied)
-    def query(params, &block)
-      with_authentication_token do |token|
-        params[:token] = token if not token.strip.empty?
-
-        items = execute_query(params)
-
-        if block.nil?
-          items
-        else
-          items.each { |item| block.call(item) }
-        end
+    # Returns the items supplied from the service
+    def get_media_items(params = {}, &block)
+      if block.nil?
+        get_entries(END_POINT, params)      
+      else
+        get_entries(END_POINT, params, &block)
       end
     end
 
-    # Public: Generates a query URL for the Media endpoint
+    # Public: Updates the supplied items and their properties using the 
+    # PUT method
     #
-    # params - a hash of query string parameters
+    # items - an array of items to be updated
+    # params - an optional hash of parameters (query string)
     #
-    # Examples:
+    # Example:
     #
-    #     service = PlatformLib::MediaService.new(USER, PASS)
-    #     puts service.query_url({ fields: "id,guid" })
+    #     items = [ { id: "id_value", guid: "guid_value" }, .. ]
+    #     media_service.update_media_items(items)
     #
-    # Returns the full url for the media service endpoint with the specified
-    # query parameters
-    def query_uri(params)
-      url = "http://data.media.theplatform.com/media/data/Media"
-      url << "?#{URI.encode_www_form(params)}" if params
-      
-      URI.parse(url)
-    end
-
-    private
-
-    def execute_query(params)
-      uri = query_uri(params)
-      get_entries(uri)
+    def update_media_items(items, params)
+      put_entries("#{END_POINT}/list", params, items)
     end
   end
 end

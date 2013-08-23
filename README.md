@@ -4,7 +4,7 @@
 
 A simple gem to help us work with ThePlatform's Data Service API.
 
-## Installation (Doesn't work yet)
+## Installation
 
 Add this line to your application's Gemfile:
 
@@ -20,7 +20,14 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+The gem will add `tp_lib` to your PATH. This command executes scripts found in 
+the scripts directory.
+
+Currently there is only one script. Here's how we use it:
+
+    $ tp_lib sync_guid_with_id <user> <pass>
+
+*Replace <user> and <pass> with your MPX username and password*
 
 ## Contributing
 
