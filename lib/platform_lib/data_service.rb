@@ -47,8 +47,8 @@ module PlatformLib
         # create a new service
         sign_in
 
-        class_name = "PlatformLib::#{name.capitalize}Service"
-        service = Object.const_get(class_name).new(@auth_token)
+        class_name = "#{name.capitalize}Service"
+        service = PlatformLib.const_get(class_name).new(@auth_token)
         @services[name] = service
       end
 
