@@ -65,6 +65,17 @@ module PlatformLib
       WebHelper::put(uri, body)
     end
 
+    def post_data(end_point, params = {}, data)
+      ensure_auth_param(params)
+
+      uri = URI.parse("#{end_point}?#{URI.encode_www_form(params)}")
+      puts uri.to_s
+      body = "#{JSON.generate(data)}"
+
+      WebHelper::post(uri, body)
+    end
+
+
     private 
 
     def ensure_auth_param(params)
