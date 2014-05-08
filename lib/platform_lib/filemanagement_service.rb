@@ -8,7 +8,7 @@ module PlatformLib
   # Examples:
   #
   #     # the preferred method 
-  #     service = PlatformLib::DataService.new("user", "pass").filemanagement_service
+  #     service = PlatformLib::BusinessService.new("user", "pass").filemanagement_service
   #
   #     # direct instantiation
   #     service = PlatformLib::FileManagementService.new("auth_token")
@@ -16,7 +16,7 @@ module PlatformLib
   class FilemanagementService
     include ServiceBase
 
-    END_POINT = "http://fms.theplatform.com/web/FileManagement"
+    END_POINT = "https://fms.theplatform.com/web/FileManagement"
     
     # Public: Creates a new instance
     #
@@ -38,7 +38,7 @@ module PlatformLib
     # Returns an empty response if successful
     def resetTask(taskId, params)
       data = { :resetTask => { :taskId => taskId } }
-      post_data("#{END_POINT}/resetTask", params, data)
+      post_data(END_POINT, params, data)
     end
   end
 end

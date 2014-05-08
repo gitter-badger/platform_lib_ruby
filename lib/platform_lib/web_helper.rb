@@ -42,7 +42,7 @@ module PlatformLib
       request = Net::HTTP::Post.new(uri.request_uri)
       request.content_type = "application/json"
       request.body = body
-      
+
       http.request(request)
     end
 
