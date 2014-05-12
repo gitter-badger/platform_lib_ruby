@@ -1,6 +1,8 @@
 # Platform Lib Ruby 
 
 [![Build Status](https://travis-ci.org/ShawONEX/platform_lib_ruby.png)](https://travis-ci.org/ShawONEX/platform_lib_ruby)
+[![Gem Version](https://badge.fury.io/rb/platform_lib.svg)](http://badge.fury.io/rb/platform_lib)
+
 
 A simple gem to help us work with ThePlatform's Data Service API.
 
@@ -13,7 +15,7 @@ You'll need to clone the repo and cd into the directory. Then run these:
 
 Add this line to your application's Gemfile (if writing code):
 
-    gem 'platform_lib_ruby'
+    gem 'platform_lib'
 
 ## Updating
 
