@@ -33,6 +33,19 @@ module PlatformLib
       http.request(request)
     end
 
+    def self.post(uri, body)
+      http = Net::HTTP.new(uri.host, uri.port)
+      if uri.scheme == "https"
+        http.use_ssl = true
+      end
+
+      request = Net::HTTP::Post.new(uri.request_uri)
+      request.content_type = "application/json"
+      request.body = body
+
+      http.request(request)
+    end
+
     private
 
     def self.set_auth(request, auth)
