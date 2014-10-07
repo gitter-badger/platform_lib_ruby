@@ -1,4 +1,5 @@
 # Platform Lib Ruby 
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/ShawONEX/platform_lib_ruby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Build Status](https://travis-ci.org/ShawONEX/platform_lib_ruby.png)](https://travis-ci.org/ShawONEX/platform_lib_ruby)
 [![Gem Version](https://badge.fury.io/rb/platform_lib.svg)](http://badge.fury.io/rb/platform_lib)
